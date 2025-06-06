@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class EstudianteResponseDTO {
+    private Integer id;
     private String nombres;
     private String apellidos;
     private String dni;
@@ -16,5 +17,5 @@ public class EstudianteResponseDTO {
     private String provincia;
     private String carrera;
     private String sexo;
-    private String estado;  // "Activo" o "Inactivo"
+    private String estado;
 }

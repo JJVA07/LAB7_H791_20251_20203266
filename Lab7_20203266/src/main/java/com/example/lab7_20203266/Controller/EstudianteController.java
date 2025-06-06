@@ -20,10 +20,9 @@ public class EstudianteController {
     private EstudianteRepository estudianteRepo;
 
     @PostMapping
-    public ResponseEntity<?> registrar(@Valid @RequestBody Estudiante est) {
+    public ResponseEntity<String> registrar(@Valid @RequestBody Estudiante est) {
         est.setEstado(true);
         est.setFechaRegistro(LocalDateTime.now());
-        est.setUltimaActualizacion(null);
         estudianteRepo.save(est);
         return ResponseEntity.status(HttpStatus.CREATED).body("Estudiante registrado correctamente.");
     }
@@ -33,21 +32,19 @@ public class EstudianteController {
         return estudianteRepo.findAll().stream().map(this::toDTO).toList();
     }
 
-    @GetMapping("/{dni}")
-    public ResponseEntity<?> buscarPorDni(@PathVariable String dni) {
-        Optional<Estudiante> opt = estudianteRepo.findByDni(dni);
+    @GetMapping("/id/{id}")
+    public ResponseEntity<?> buscarPorId(@PathVariable Integer id) {
+        Optional<Estudiante> opt = estudianteRepo.findById(id);
         if (opt.isPresent()) {
-            EstudianteResponseDTO dto = toDTO(opt.get());
-            return ResponseEntity.ok(dto);
+            return ResponseEntity.ok(toDTO(opt.get()));
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estudiante no encontrado");
         }
     }
 
 
-
     @PutMapping("/{id}")
-    public ResponseEntity<?> actualizar(@PathVariable Integer id, @Valid @RequestBody Estudiante datos) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @RequestBody Estudiante datos) {
         Optional<Estudiante> opt = estudianteRepo.findById(id);
         if (opt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estudiante no encontrado");
 
@@ -55,13 +52,13 @@ public class EstudianteController {
         est.setCorreoPersonal(datos.getCorreoPersonal());
         est.setTelefono(datos.getTelefono());
         est.setUltimaActualizacion(LocalDateTime.now());
-
         estudianteRepo.save(est);
-        return ResponseEntity.ok("Datos actualizados correctamente.");
+
+        return ResponseEntity.ok("Estudiante actualizado.");
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> borrarLogicamente(@PathVariable Integer id) {
+    public ResponseEntity<String> borrarLogicamente(@PathVariable Integer id) {
         Optional<Estudiante> opt = estudianteRepo.findById(id);
         if (opt.isEmpty()) return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Estudiante no encontrado");
 
